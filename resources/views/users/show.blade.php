@@ -16,4 +16,12 @@
             {{ $user->created_at }}
         </li>
     </ul>
+
+    <form action="{{ route('users.destroy', $user->id)}}" method="post">
+        @method('DELETE')
+        @csrf
+        <button type="submit">
+            Deletar
+        </button>
+    </form>
 @endsection
