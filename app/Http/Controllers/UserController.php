@@ -9,24 +9,23 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    protected $model;
+
+    public function __construct(User $user) {
+        $this->model = $user;
+    }
+
     public function index(Request $request)
     {
         //$users = User::where('name', 'LIKE', "%{$request->name}%")->get();
-        $search = $request->search;
-        $users = User::where(function ($query) use ($search) {
-            if ($search) {
-                $query->where('email', $search);
-                $query->orWhere('name', 'LIKE', "%{$search}%");
-            }
-        })->get();
-
+        $users = $this->model->getUsers(search: $request->get('search', ''));
         return view('users.index', compact('users'));
     }
 
     public function show(int $id)
     {
         //$user = User::where('id', '=', $id)->first();
-        if (!$user = User::find($id)) {
+        if (!$user = $this->model->find($id)) {
             return redirect()->route('users.index');
         }
 
@@ -54,7 +53,7 @@ class UserController extends Controller
 
         $data = $request->all();
         $data['password'] = bcrypt($data['password']);
-        User::create($data);
+        $this->model->create($data);
         return redirect()->route('users.index');
     }
 
@@ -63,7 +62,7 @@ class UserController extends Controller
      */
     public function edit(int $id)
     {
-        if (!$user = User::find($id)) {
+        if (!$user = $this->model->find($id)) {
             return redirect()->route('users.index');
         }
 
@@ -72,7 +71,7 @@ class UserController extends Controller
 
     public function update(int $id, UpdateUserFormRequest $request)
     {
-        if (!$user = User::find($id)) {
+        if (!$user = $this->model->find($id)) {
             return redirect()->route('users.index');
         }
 
@@ -86,7 +85,7 @@ class UserController extends Controller
 
     public function destroy(int $id)
     {
-        if (!$user = User::find($id)) {
+        if (!$user = $this->model->find($id)) {
             return redirect()->route('users.index');
         }
 
