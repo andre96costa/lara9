@@ -54,10 +54,14 @@
                         <a href="{{ route('users.show', $user->id) }}" class="bg-orange-200 rounded-full py-2 px-6">Detalhes</a>
                     </td>
                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <a href="{{ route('comments.index', $user->id) }}" class="bg-blue-200 rounded-full py-2 px-6">Comentários (0)</a>
+                      <a href="{{ route('comments.index', $user->id) }}" class="bg-blue-200 rounded-full py-2 px-6">Comentários ({{ count($user->comments)}})</a>
                   </td>
                 </tr>
             @endforeach
         </tbody>
-    </table>        
+    </table>
+    
+    <div class="py-4">
+        {{ $users->appends(['search' => request()->get('search', '')])->links() }}
+    </div>
 @endsection
